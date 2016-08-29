@@ -19,19 +19,7 @@ sudo cp vgt_mgr /usr/bin
 
 cd ..
 
-git clone https://github.com/01org/igvtg-xen xen_src
-cd xen_src/
-git checkout 2016q2-4.6
-git clone https://github.com/01org/igvtg-qemu.git -b 2016q2-2.3.0 qemu-xen
-cp -r qemu-xen/ tools/
-sed -i '/QEMU_UPSTREAM_URL/s:http\://xenbits.xen.org/git-http/qemu-upstream-4.6-testing.git:$(XEN_ROOT)/tools/qemu-xen:' Config.mk
-sed -i '/QEMU_UPSTREAM_URL/s:git\://xenbits.xen.org/qemu-upstream-4.6-testing.git:$(XEN_ROOT)/tools/qemu-xen:' Config.mk
-./autogen.sh
-./configure --prefix=/usr  # XEN4.6 default path is /usr/local
-make -j8 xen tools
-sudo cp xen/xen.gz /boot/xen-vgt.gz
-sudo make install-tools PYTHON_PREFIX_ARG=
-
+#need grub configure
 
 
 
