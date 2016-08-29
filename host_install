@@ -1,12 +1,12 @@
-#!/bin/bash
-sudo apt-get install git bin86 bcc python-dev iasl uuid-dev libperl-dev libgtk2.0-dev libaio-dev libyajl-dev bison libc6-dev-i386 texinfo libsdl2-dev libssl-dev mesa-common-dev libepoxy-dev libdrm-dev libgbm-dev libx11-dev autoconf libncurses5-dev libglib2.0-dev libpixman-1-dev libsdl-dev
+#!/bin/bash -e
+sudo apt-get install git bin86 bcc python-dev iasl uuid-dev libperl-dev libgtk2.0-dev libaio-dev libyajl-dev bison libc6-dev-i386 texinfo libsdl2-dev libssl-dev mesa-common-dev libepoxy-dev libdrm-dev libgbm-dev libx11-dev autoconf libncurses5-dev libglib2.0-dev libpixman-1-dev libsdl-dev -y
 
 sudo chmod 777 /etc/initramfs-tools/modules
 echo "xengt" >> /etc/initramfs-tools/modules
 echo "kvm" >> /etc/initramfs-tools/modules
 sudo chmod 644 /etc/initramfs-tools/modules
 
-sudo cp 19_xengt /etc/grub.d/
+sudo cp 19_xengt /etc/grub.d/19_xengt
 sudo chmod 755 /etc/grub.d/cp 19_xengt
 sudo chgrp root /etc/grub.d/cp 19_xengt
 sudo chown root /etc/grub.d/cp 19_xengt
