@@ -7,9 +7,9 @@ echo "kvm" >> /etc/initramfs-tools/modules
 sudo chmod 644 /etc/initramfs-tools/modules
 
 sudo cp 19_xengt /etc/grub.d/19_xengt
-sudo chmod 755 /etc/grub.d/cp 19_xengt
-sudo chgrp root /etc/grub.d/cp 19_xengt
-sudo chown root /etc/grub.d/cp 19_xengt
+sudo chmod 755 /etc/grub.d/19_xengt
+sudo chgrp root /etc/grub.d/19_xengt
+sudo chown root /etc/grub.d/19_xengt
 
 
 cd ~/
