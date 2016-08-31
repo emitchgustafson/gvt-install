@@ -11,7 +11,17 @@ else
    echo "-----modules already added to /modules"
 fi
 
+if ! [ -a /etc/grub.d/09_linux-gvt ]
+then
+   sudo cp 09_linux-gvt /etc/grub.d/09_linux-gvt
+   sudo chmod 755 /etc/grub.d/09_linux-gvt
+   sudo chgrp root /etc/grub.d/09_linux-gvt
+   sudo chown root /etc/grub.d/09_linux-gvt
+else
+   echo "-----grub.d already updated"
+fi
 
+cd ~/
 
 if ! [ -a ~/kernel_src ]
 then
@@ -28,16 +38,6 @@ then
 
 else
    echo "-----kernel already exsists"
-fi
-
-if ! [ -a /etc/grub.d/09_linux-gvt ]
-then
-   sudo cp 09_linux-gvt /etc/grub.d/09_linux-gvt
-   sudo chmod 755 /etc/grub.d/09_linux-gvt
-   sudo chgrp root /etc/grub.d/09_linux-gvt
-   sudo chown root /etc/grub.d/09_linux-gvt
-else
-   echo "-----grub.d already updated"
 fi
 
 sudo update-grub
