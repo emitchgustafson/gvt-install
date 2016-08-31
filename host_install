@@ -61,7 +61,7 @@ else
    echo "-----xen(igvt) already exsists"
 fi
 
-
+sudo update-grub
 
 
 
