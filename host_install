@@ -86,8 +86,6 @@ else
 fi
 
 
-
-
 sudo update-grub
 
 
