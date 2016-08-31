@@ -89,5 +89,21 @@ fi
 sudo update-grub
 
 
+if !  [ -a /xen-disks ]
+then
+   sudo mkdir /xen-disks
+   sudo chmod 777 /xen-disks
+else
+   echo "-----xen-disks already exsists"
+fi
+
+cd /xen-disks
+
+if ! [ -a ubuntu1.img ]
+then
+   dd if=/dev/zero of="ubuntu1.img" bs=1M count=10000
+else
+   echo "-----guest .img already exsists"
+fi
 
 
