@@ -1,7 +1,7 @@
 #!/bin/bash -e
 sudo apt-get install git bin86 bcc python-dev iasl uuid-dev libperl-dev libgtk2.0-dev libaio-dev libyajl-dev bison libc6-dev-i386 texinfo libsdl2-dev libssl-dev mesa-common-dev libepoxy-dev libdrm-dev libgbm-dev libx11-dev autoconf libncurses5-dev libglib2.0-dev libpixman-1-dev libsdl-dev -y
 
-
+sudo cp ubuntu.cfg /
 
 if [ "$(cat /etc/initramfs-tools/modules | grep -o  xengt)" == "" ]
 then
@@ -76,8 +76,7 @@ then
    echo "sudo brctl addif xenbr0 $ETHER" >> ~/setup
    echo "sudo ifconfig $ETHER 0" >> ~/setup
    echo "sudo dhclient xenbr0" >> ~/setup
-   echo "sudo service network-manager restart" >> ~/setup
-
+#   echo "sudo service network-manager restart" >> ~/setup
    sudo chmod +x ~/setup
 
 #   sudo chmod ugo+x startXen
@@ -101,11 +100,18 @@ fi
 
 cd /xen-disks
 
+if ! [ -a ubuntu-14.04.4-desktop-amd64.iso ]
+then
+   wget releases.ubuntu.com/14.04/ubuntu-14.04.4-desktop-amd64.iso 
+else
+   echo "-----Ubuntu .iso already exsists"
+fi
+
 if ! [ -a ubuntu1.img ]
 then
-   dd if=/dev/zero of="ubuntu1.img" bs=1M count=10000
+   dd if=/dev/zero of="ubuntu1.img" bs=1M count=15000
 else
    echo "-----guest .img already exsists"
 fi
 
-
+sudo cp /ubuntu.cfg /etc/xen/ubuntu.cfg
