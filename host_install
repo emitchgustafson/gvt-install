@@ -71,11 +71,12 @@ then
 
    #setup script to run on boot to start xencommons
    echo "#!/bin/bash" > startXen
-   echo "sudo etc/init.d/xencommons start" >> startXen
+   echo "sudo /etc/init.d/xencommons start" >> startXen
    echo "sudo brctl addbr xenbr0" >> startXen
    echo "sudo brctl addif xenbr0 $ETHER" >> startXen
    echo "sudo ifconfig $ETHER" >> startXen
    echo "sudo dhclient xenbr0" >> startXen
+   echo "sudo service network-manager restart" >> startXen
 
    sudo chmod ugo+x startXen
    sudo mv startXen /etc/init.d/startXen
