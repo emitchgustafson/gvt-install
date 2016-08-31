@@ -32,7 +32,7 @@ fi
 
 if ! [ -a /etc/grub.d/09_linux-gvt ]
 then
-   sudo cp 19_xengt /etc/grub.d/09_linux-gvt
+   sudo cp 09_linux-gvt /etc/grub.d/09_linux-gvt
    sudo chmod 755 /etc/grub.d/09_linux-gvt
    sudo chgrp root /etc/grub.d/09_linux-gvt
    sudo chown root /etc/grub.d/09_linux-gvt
@@ -40,7 +40,7 @@ else
    echo "-----grub.d already updated"
 fi
 
-#need grub configure
+sudo update-grub
 
 
 
