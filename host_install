@@ -13,7 +13,7 @@ else
    echo "-----modules already added to /modules"
 fi
 
-if ! [ -a ~/kernel_src ]
+if ! [ -a /etc/grub.d/19_xengt ]
 then
    sudo cp 19_xengt /etc/grub.d/19_xengt
    sudo chmod 755 /etc/grub.d/19_xengt
