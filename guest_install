@@ -25,7 +25,19 @@ fi
 
 cd ~/
 
-if ! [ -a ~/kernel_src ]
+if [ $1 == '-i' ];then
+   echo "----- file assumed to be there attempting to force"
+   #scp -r 172.16.100.129:/home/user/kernel_src ~/kernel_src
+   cd kernel_src/
+   #git checkout 2016q2-4.3.0
+   cp config-4.3.0-host .config
+   make -j8 && sudo make modules_install
+   sudo mkinitramfs -o /boot/initrd.img -v 4.3.0-rc6-vgt+
+   sudo cp arch/x86/boot/bzImage /boot/vmlinuz-4.3.0
+   sudo cp vgt.rules /etc/udev/rules.d
+   chmod a+x vgt_mgr
+   sudo cp vgt_mgr /usr/bin
+elif ! [ -a ~/kernel_src ]
 then
    git clone https://github.com/01org/igvtg-kernel kernel_src
    cd kernel_src/
@@ -37,7 +49,6 @@ then
    sudo cp vgt.rules /etc/udev/rules.d
    chmod a+x vgt_mgr
    sudo cp vgt_mgr /usr/bin
-
 else
    echo "-----kernel already exsists"
 fi
