@@ -1,6 +1,6 @@
 #!/bin/sh -e
 cat << EOF
-menuentry 'Ubuntu with Xen hypervisor XenGT(kernel 4.3.0)' --class ubuntu --class gnu-linux --class gnu --class os --class xen \$menuentry_id_option 'xen-gnulinux-simple-${GRUB_DEVICE_UUID}' {
+menuentry 'Ubuntu with Xen hypervisor XenGT(kernel 4.4.0)' --class ubuntu --class gnu-linux --class gnu --class os --class xen \$menuentry_id_option 'xen-gnulinux-simple-${GRUB_DEVICE_UUID}' {
         insmod part_msdos
         insmod ext2
         set root='hd1,msdos1'
@@ -11,8 +11,8 @@ menuentry 'Ubuntu with Xen hypervisor XenGT(kernel 4.3.0)' --class ubuntu --clas
         fi
         echo    'Loading Xen vgt ...'
         multiboot       /boot/xen-vgt.gz placeholder \${xen_rm_opts} 
-        module  /boot/vmlinuz-4.3.0 root=UUID=${GRUB_DEVICE_UUID} rw rd_NO_LUKS rd_NO_LVM LANG=en_US.UTF-8 rd_NO_MD SYSFONT=latarcyrheb-sun16 rhgb crashkernel=auto KEYBOARDTYPE=pc KEYTABLE=us rd_NO_DM ignore_loglevel console=tty0 console=hvc0 consoleblank=0 log_buf_len=4M i915.hvm_boot_foreground=1 i915.enable_cmd_parser=0
+        module  /boot/vmlinuz-4.3.4 root=UUID=${GRUB_DEVICE_UUID} rw rd_NO_LUKS rd_NO_LVM LANG=en_US.UTF-8 rd_NO_MD SYSFONT=latarcyrheb-sun16 rhgb crashkernel=auto KEYBOARDTYPE=pc KEYTABLE=us rd_NO_DM ignore_loglevel console=tty0 console=hvc0 consoleblank=0 log_buf_len=4M i915.hvm_boot_foreground=1 i915.enable_cmd_parser=0
         echo 'Loading inital ramdisk ....'
-        module /boot/initrd.img
+        module /boot/initrd.img-4.4.0
 }
 
