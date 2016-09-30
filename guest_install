@@ -38,6 +38,7 @@ else
 fi
 
 cd ~/
+
 if ! [ -a ~/kernel_src ]
 then
    git clone https://github.com/emitchgustafson/igvtg-kernel kernel_src
@@ -50,6 +51,7 @@ then
    sudo cp vgt.rules /etc/udev/rules.d
    chmod a+x vgt_mgr
    sudo cp vgt_mgr /usr/bin
+
 else
    echo "-----kernel already exsists"
 fi

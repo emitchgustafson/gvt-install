@@ -29,6 +29,16 @@ sudo apt-get install libsdl-dev -y
 
 sudo cp ubuntu.cfg /
 
+if ! [ -a /etc/grub.d/19_xengt ]
+then
+   sudo cp 19_xengt /etc/grub.d/19_xengt
+   sudo chmod 755 /etc/grub.d/19_xengt
+   sudo chgrp root /etc/grub.d/19_xengt
+   sudo chown root /etc/grub.d/19_xengt
+else
+   echo "-----grub.d already updated"
+fi
+
 if [ "$(cat /etc/initramfs-tools/modules | grep -o  xengt)" == "" ]
 then
    sudo chmod 777 /etc/initramfs-tools/modules
