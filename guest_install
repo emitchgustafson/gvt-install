@@ -1,7 +1,31 @@
 #!/bin/bash -e
 sudo apt-get update -y
 sudo apt-get upgrade -y
-sudo apt-get install git bin86 bcc python-dev iasl uuid-dev libperl-dev libgtk2.0-dev libaio-dev libyajl-dev bison libc6-dev-i386 texinfo libsdl2-dev libssl-dev mesa-common-dev libepoxy-dev libdrm-dev libgbm-dev libx11-dev autoconf libncurses5-dev libglib2.0-dev libpixman-1-dev libsdl-dev -y
+sudo apt-get install git -y
+sudo apt-get install bin86 -y
+sudo apt-get install bcc -y
+sudo apt-get install python-dev -y
+sudo apt-get install iasl -y
+sudo apt-get install uuid-dev -y
+sudo apt-get install libperl-dev -y
+sudo apt-get install libgtk2.0-dev -y
+sudo apt-get install libaio-dev -y
+sudo apt-get install libyajl-dev -y
+sudo apt-get install bison -y
+sudo apt-get install libc6-dev-i386 -y
+sudo apt-get install texinfo -y
+sudo apt-get install libsdl2-dev -y
+sudo apt-get install libssl-dev -y
+sudo apt-get install mesa-common-dev -y
+sudo apt-get install libepoxy-dev -y
+sudo apt-get install libdrm-dev -y
+sudo apt-get install libgbm-dev -y
+sudo apt-get install libx11-dev -y
+sudo apt-get install autoconf -y
+sudo apt-get install libncurses5-dev -y
+sudo apt-get install libglib2.0-dev -y
+sudo apt-get install libpixman-1-dev -y
+sudo apt-get install libsdl-dev -y
 
 if [ "$(cat /etc/initramfs-tools/modules | grep -o  xengt)" == "" ]
 then
@@ -13,39 +37,16 @@ else
    echo "-----modules already added to /modules"
 fi
 
-if ! [ -a /etc/grub.d/09_linux-gvt ]
-then
-   sudo cp 09_linux-gvt /etc/grub.d/09_linux-gvt
-   sudo chmod 755 /etc/grub.d/09_linux-gvt
-   sudo chgrp root /etc/grub.d/09_linux-gvt
-   sudo chown root /etc/grub.d/09_linux-gvt
-else
-   echo "-----grub.d already updated"
-fi
-
 cd ~/
-
-if [ $1 == '-i' ];then
-   echo "----- file assumed to be there attempting to force"
-   #scp -r 172.16.100.129:/home/user/kernel_src ~/kernel_src
-   cd kernel_src/
-   #git checkout 2016q2-4.3.0
-   cp config-4.3.0-host .config
-   make -j8 && sudo make modules_install
-   sudo mkinitramfs -o /boot/initrd.img -v 4.3.0-rc6-vgt+
-   sudo cp arch/x86/boot/bzImage /boot/vmlinuz-4.3.0
-   sudo cp vgt.rules /etc/udev/rules.d
-   chmod a+x vgt_mgr
-   sudo cp vgt_mgr /usr/bin
-elif ! [ -a ~/kernel_src ]
+if ! [ -a ~/kernel_src ]
 then
-   git clone https://github.com/01org/igvtg-kernel kernel_src
+   git clone https://github.com/emitchgustafson/igvtg-kernel kernel_src
    cd kernel_src/
-   git checkout 2016q2-4.3.0
+   git checkout 2016q2-4.4.0
    cp config-4.3.0-host .config
    make -j8 && sudo make modules_install
-   sudo mkinitramfs -o /boot/initrd.img -v 4.3.0-rc6-vgt+
-   sudo cp arch/x86/boot/bzImage /boot/vmlinuz-4.3.0
+   sudo mkinitramfs -o /boot/initrd.img-4.4.0 -v 4.4.0-vgt+
+   sudo cp arch/x86/boot/bzImage /boot/vmlinuz-4.4.0
    sudo cp vgt.rules /etc/udev/rules.d
    chmod a+x vgt_mgr
    sudo cp vgt_mgr /usr/bin

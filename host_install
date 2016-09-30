@@ -1,5 +1,31 @@
-#!/bin/bash -e
-sudo apt-get install git bin86 bcc python-dev iasl uuid-dev libperl-dev libgtk2.0-dev libaio-dev libyajl-dev bison libc6-dev-i386 texinfo libsdl2-dev libssl-dev mesa-common-dev libepoxy-dev libdrm-dev libgbm-dev libx11-dev autoconf libncurses5-dev libglib2.0-dev libpixman-1-dev libsdl-dev -y
+#!/bin/bash -ei
+sudo apt-get update
+sudo apt-get upgrade
+sudo apt-get install git -y
+sudo apt-get install bin86 -y
+sudo apt-get install bcc -y
+sudo apt-get install python-dev -y
+sudo apt-get install iasl -y
+sudo apt-get install uuid-dev -y
+sudo apt-get install libperl-dev -y
+sudo apt-get install libgtk2.0-dev -y
+sudo apt-get install libaio-dev -y
+sudo apt-get install libyajl-dev -y
+sudo apt-get install bison -y
+sudo apt-get install libc6-dev-i386 -y
+sudo apt-get install texinfo -y
+sudo apt-get install libsdl2-dev -y
+sudo apt-get install libssl-dev -y
+sudo apt-get install mesa-common-dev -y
+sudo apt-get install libepoxy-dev -y
+sudo apt-get install libdrm-dev -y
+sudo apt-get install libgbm-dev -y
+sudo apt-get install libx11-dev -y
+sudo apt-get install autoconf -y
+sudo apt-get install libncurses5-dev -y
+sudo apt-get install libglib2.0-dev -y
+sudo apt-get install libpixman-1-dev -y
+sudo apt-get install libsdl-dev -y
 
 sudo cp ubuntu.cfg /
 
@@ -13,26 +39,16 @@ else
    echo "-----modules already added to /modules"
 fi
 
-if ! [ -a /etc/grub.d/19_xengt ]
-then
-   sudo cp 19_xengt /etc/grub.d/19_xengt
-   sudo chmod 755 /etc/grub.d/19_xengt
-   sudo chgrp root /etc/grub.d/19_xengt
-   sudo chown root /etc/grub.d/19_xengt
-else
-   echo "-----grub.d already updated"
-fi
-
 cd ~/
 if ! [ -a ~/kernel_src ]
 then
-   git clone https://github.com/01org/igvtg-kernel kernel_src
+   git clone https://github.com/emitchgustafson/igvtg-kernel kernel_src
    cd kernel_src/
-   git checkout 2016q2-4.3.0
+   git checkout 2016q2-4.4.0
    cp config-4.3.0-host .config
    make -j8 && sudo make modules_install
-   sudo mkinitramfs -o /boot/initrd.img -v 4.3.0-rc6-vgt+
-   sudo cp arch/x86/boot/bzImage /boot/vmlinuz-4.3.0
+   sudo mkinitramfs -o /boot/initrd.img-4.4.0 -v 4.4.0-vgt+
+   sudo cp arch/x86/boot/bzImage /boot/vmlinuz-4.4.0
    sudo cp vgt.rules /etc/udev/rules.d
    chmod a+x vgt_mgr
    sudo cp vgt_mgr /usr/bin
@@ -45,15 +61,15 @@ cd ~/
 
 if ! [ -a ~/xen_src ]
 then
-   git clone https://github.com/01org/igvtg-xen xen_src
+   git clone https://github.com/emitchgustafson/igvtg-xen xen_src
    cd xen_src/
-   git checkout 2016q2-4.6
+   git checkout 2016q2-4.6.1
    git clone https://github.com/01org/igvtg-qemu.git -b 2016q2-2.3.0 qemu-xen
    cp -r qemu-xen/ tools/
    sed -i '/QEMU_UPSTREAM_URL/s:http\://xenbits.xen.org/git-http/qemu-upstream-4.6-testing.git:$(XEN_ROOT)/tools/qemu-xen:' Config.mk
    sed -i '/QEMU_UPSTREAM_URL/s:git\://xenbits.xen.org/qemu-upstream-4.6-testing.git:$(XEN_ROOT)/tools/qemu-xen:' Config.mk
    ./autogen.sh
-   ./configure --prefix=/usr  # XEN4.6 default path is /usr/local
+   ./configure --prefix=/usr --disable-qemu-traditional  # XEN4.6 default path is /usr/local
    make -j8 xen tools
    sudo cp xen/xen.gz /boot/xen-vgt.gz
    sudo make install-tools PYTHON_PREFIX_ARG=
