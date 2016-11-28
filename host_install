@@ -1,4 +1,21 @@
 #!/bin/bash -ei
+
+GITHUB=emitchgustafson
+KERNEL_REV=4.4.30
+
+KERNEL_BRANCH=2016q3-4.4
+XEN_BRANCH=2016q3-4.6.1
+QEMU_BRANCH=2016q3-2.3.0
+
+KERNEL_DIR=kernel_src
+XEN_DIR=xen_src
+QEMU_DIR=qemu_xen
+
+for arg in "$@"
+do
+   $arg
+done
+
 sudo apt-get update
 sudo apt-get upgrade
 sudo apt-get install git -y
@@ -49,43 +66,55 @@ else
    echo "-----modules already added to /modules"
 fi
 
-cd ~/
-if ! [ -a ~/kernel_src ]
-then
-   git clone https://github.com/emitchgustafson/igvtg-kernel kernel_src
-   cd kernel_src/
-   git checkout 2016q2-4.4
-   cp config-4.4.0-host .config
-   make -j8 && sudo make modules_install
-   sudo mkinitramfs -o /boot/initrd.img-4.4.24 -v 4.4.24-vgt+
-   sudo cp arch/x86/boot/bzImage /boot/vmlinuz-4.4.24
-   sudo cp vgt.rules /etc/udev/rules.d
-   chmod a+x vgt_mgr
-   sudo cp vgt_mgr /usr/bin
+#------------------------------------------------------------------------------
 
+cd ~/
+if ! [ -a $KERNEL_DIR ]
+then
+   git clone https://github.com/$GITHUB/igvtg-kernel -b $KERNEL_BRANCH $KERNEL_DIR
 else
    echo "-----kernel already exsists"
 fi
+cd $KERNEL_DIR/
+if ! [ -a .config ]
+then
+   cp config-4.4.0-host .config
+fi
+make -j8 && sudo make modules_install
+sudo mkinitramfs -o /boot/initrd.img-$KERNEL_REV -v $KERNEL_REV-vgt+
+sudo cp arch/x86/boot/bzImage /boot/vmlinuz-$KERNEL_REV
+sudo cp vgt.rules /etc/udev/rules.d
+chmod a+x vgt_mgr
+sudo cp vgt_mgr /usr/bin
+
 
 cd ~/
 
-if ! [ -a ~/xen_src ]
+#------------------------------------------------------------------------------
+
+if ! [ -a $XEN_DIR ]
 then
-   git clone https://github.com/emitchgustafson/igvtg-xen xen_src
-   cd xen_src/
-   git checkout 2016q2-4.6.1
-   git clone https://github.com/emitchgustafson/igvtg-qemu.git -b 2016q2-2.3.0 qemu-xen
-   cp -r qemu-xen/ tools/
-   sed -i '/QEMU_UPSTREAM_URL/s:http\://xenbits.xen.org/git-http/qemu-upstream-4.6-testing.git:$(XEN_ROOT)/tools/qemu-xen:' Config.mk
-   sed -i '/QEMU_UPSTREAM_URL/s:git\://xenbits.xen.org/qemu-upstream-4.6-testing.git:$(XEN_ROOT)/tools/qemu-xen:' Config.mk
-   ./autogen.sh
-   ./configure --prefix=/usr --disable-qemu-traditional --enable-rombios # XEN4.6 default path is /usr/local
-   make -j8 xen tools
-   sudo cp xen/xen.gz /boot/xen-vgt.gz
-   sudo make install-tools PYTHON_PREFIX_ARG=
+   git clone https://github.com/$GITHUB/igvtg-xen -b $XEN_BRANCH $XEN_DIR
 else
    echo "-----xen(igvt) already exsists"
 fi
+if ! [ -a $QEMU_DIR ]
+then
+   git clone https://github.com/$GITHUB/igvtg-qemu.git -b $QEMU_BRANCH $QEMU_DIR
+else
+   echo "-----xen(igvt) already exsists"
+fi
+cp -r $QEMU_DIR $XEN_DIR/tools/qemu-xen
+cd $XEN_DIR
+sed -i '/QEMU_UPSTREAM_URL/s:http\://xenbits.xen.org/git-http/qemu-upstream-4.6-testing.git:$(XEN_ROOT)/tools/qemu-xen:' Config.mk
+sed -i '/QEMU_UPSTREAM_URL/s:git\://xenbits.xen.org/qemu-upstream-4.6-testing.git:$(XEN_ROOT)/tools/qemu-xen:' Config.mk
+./autogen.sh
+./configure --prefix=/usr --disable-qemu-traditional --enable-rombios
+make -j8 xen tools
+sudo cp xen/xen.gz /boot/xen-vgt.gz
+sudo make install-tools PYTHON_PREFIX_ARG=
+
+#------------------------------------------------------------------------------
 
 if ! [ -a ~/setup ]
 then
@@ -126,9 +155,9 @@ fi
 
 cd /xen-disks
 
-if ! [ -a ubuntu-14.04.4-desktop-amd64.iso ]
+if ! [ -a ubuntu-16.04-desktop-amd64.iso ]
 then
-   wget releases.ubuntu.com/14.04/ubuntu-14.04.4-desktop-amd64.iso 
+   wget releases.ubuntu.com/16.04/ubuntu-16.04-desktop-amd64.iso 
 else
    echo "-----Ubuntu .iso already exsists"
 fi
@@ -141,4 +170,4 @@ else
    echo "-----guest .img already exsists"
 fi
 
-sudo cp /ubuntu.cfg /etc/xen/ubuntu.cfg
+sudo mv /ubuntu.cfg /etc/xen/ubuntu.cfg
