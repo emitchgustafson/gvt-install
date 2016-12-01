@@ -43,6 +43,7 @@ sudo apt-get install libncurses5-dev -y
 sudo apt-get install libglib2.0-dev -y
 sudo apt-get install libpixman-1-dev -y
 sudo apt-get install libsdl-dev -y
+sudo  apt-get install bridge-utils -y
 
 sudo cp ubuntu.cfg /
 
@@ -58,7 +59,30 @@ else
 fi
 
 if [ "$(cat /etc/initramfs-tools/modules | grep -o  xengt)" == "" ]
-then
+tho "#!/bin/bash" > /tmp/bridge-setup
+echo "### BEGIN INIT INFO" >> /tmp/bridge-setup
+echo "# Provides:          network-bridge" >> /tmp/bridge-setup
+echo "# Required-Start:" >> /tmp/bridge-setup
+echo "# Should-Start:" >> /tmp/bridge-setup
+echo "# Required-Stop:" >> /tmp/bridge-setup
+echo "# Should-Stop:" >> /tmp/bridge-setup
+echo "# Default-Start: 2 3 4 5" >> /tmp/bridge-setup
+echo "# Default-Stop: 0 1 6" >> /tmp/bridge-setup
+echo "# Short-Description: sets up  bridge for xen" >> /tmp/bridge-setup
+echo "# Description:       sets up bridge for xen" >> /tmp/bridge-setup
+echo "### END INIT INFO" >> /tmp/bridge-setup
+
+echo "sudo brctl addbr xenbr0" >> /tmp/bridge-setup
+echo "sudo brctl addif xenbr0 $ETHER" >> /tmp/bridge-setup
+echo "sudo dhclient xenbr0" >> /tmp/bridge-setup
+
+mv /tmp/bridge-setup /etc/init.d/bridge-setup
+chmod +x /etc/init.d/bridge-setup
+chown root:root /etc/init.d/bridge-setup
+
+update-rc.d bridge-setup defaults
+update-rc.d xencommons defaults
+n
    sudo chmod 777 /etc/initramfs-tools/modules
    echo "xengt" >> /etc/initramfs-tools/modules
    echo "kvm" >> /etc/initramfs-tools/modules
@@ -118,30 +142,36 @@ sudo cp xen/xen.gz /boot/xen-vgt.gz
 sudo make install-tools PYTHON_PREFIX_ARG=
 
 #------------------------------------------------------------------------------
-
-if ! [ -a ~/setup ]
+if ! [ -a /etc/init.d/bridge-setup ]
 then
-   #Determine which network interface to use
    ETHER=$(ip addr | grep 2: | grep -o "e.*:" | cut -d ":" -f 1 -)
 
-   #Install bridge utils
-   sudo  apt-get install bridge-utils -y
+   echo "#!/bin/bash" > /tmp/bridge-setup
+   echo "### BEGIN INIT INFO" >> /tmp/bridge-setup
+   echo "# Provides:          network-bridge" >> /tmp/bridge-setup
+   echo "# Required-Start:" >> /tmp/bridge-setup
+   echo "# Should-Start:" >> /tmp/bridge-setup
+   echo "# Required-Stop:" >> /tmp/bridge-setup
+   echo "# Should-Stop:" >> /tmp/bridge-setup
+   echo "# Default-Start: 2 3 4 5" >> /tmp/bridge-setup
+   echo "# Default-Stop: 0 1 6" >> /tmp/bridge-setup
+   echo "# Short-Description: sets up  bridge for xen" >> /tmp/bridge-setup
+   echo "# Description:       sets up bridge for xen" >> /tmp/bridge-setup
+   echo "### END INIT INFO" >> /tmp/bridge-setup
 
-   #setup script to run on boot to start xencommons
-   echo "#!/bin/bash" > ~/setup
-   echo "sudo /etc/init.d/xencommons start" >> ~/setup
-   echo "sudo brctl addbr xenbr0" >> ~/setup
-   echo "sudo brctl addif xenbr0 $ETHER" >> ~/setup
-   echo "sudo ifconfig $ETHER 0" >> ~/setup
-   echo "sudo dhclient xenbr0" >> ~/setup
-#   echo "sudo service network-manager restart" >> ~/setup
-   sudo chmod +x ~/setup
+   echo "sudo brctl addbr xenbr0" >> /tmp/bridge-setup
+   echo "sudo brctl addif xenbr0 $ETHER" >> /tmp/bridge-setup
+   echo "sudo dhclient xenbr0" >> /tmp/bridge-setup
 
-#   sudo chmod ugo+x startXen
-#   sudo mv startXen /etc/init.d/startXen
-#   sudo update-rc.d startXen defaults
+   sudo mv /tmp/bridge-setup /etc/init.d/bridge-setup
+   sudo chmod +x /etc/init.d/bridge-setup
+   sudo chown root:root /etc/init.d/bridge-setup
+
+   sudo update-rc.d bridge-setup defaults
+   sudo update-rc.d xencommons defaults
+
 else
-   echo "-----xen start-up script already created"
+   echo "-----xen bridge script already created"
 fi
 
 
