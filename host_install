@@ -158,12 +158,12 @@ fi
 
 cd /xen-disks
 
-if ! [ -a ubuntu-16.04-desktop-amd64.iso ]
-then
-   wget releases.ubuntu.com/16.04/ubuntu-16.04-desktop-amd64.iso 
-else
-   echo "-----Ubuntu .iso already exsists"
-fi
+#if ! [ -a ubuntu-16.04-desktop-amd64.iso ]
+#then
+#   wget releases.ubuntu.com/16.04/ubuntu-16.04-desktop-amd64.iso 
+#else
+#   echo "-----Ubuntu .iso already exsists"
+#fi
 
 if ! [ -a ubuntu1.img ]
 then
