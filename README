@@ -1,0 +1,25 @@
+This README is about gvt-install
+
+The scripts in this foldeer are used to install xengt.
+
+----HOW TO INSTALL----
+The recomended installation instructions are as follows (* = required):
+1.) Start with fresh ubuntu 16.04 install (others work but most testing is done with 16.04)
+2.) Disable computer locking and screen turning off to make installation easy
+3.) Change sudo timeout to longer time for ease of installation
+	-type "sudo visudo"
+	-add line "Defaults:user timestamp_timeout=-1" where user is username
+*4.) move into gvt-install directory nad run ./host_install
+5.) Thsi will take a while up to and beyond 2 hours depending on machine
+
+----What This Does----
+THis script does several things:
+-install dependicies
+-Build host kernal to boot from
+-Build custom version of Xen to boot from
+-create grub entry for xengt to use new kernel and new xen
+-Create start up scripts to make brige at startup
+-Starts xencommons (xenstore) at start up
+-Generate blank .img 
+-Generat defaut(xengt) xl.cfg that uses generated .img
+-Downloads .iso to use when booting to guest (Currently commented out)
